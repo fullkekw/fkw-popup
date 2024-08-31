@@ -98,12 +98,6 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
     observer.observe(dialog, {
       attributes: true
     });
-
-    const triggersInside = dialog.querySelectorAll('.fkw-popup-trigger');
-
-    triggersInside.forEach(el => {
-      el.classList.add('fkw-prevent_hideIndexes');
-    });
   }, []);
 
   // Handle events
@@ -168,7 +162,9 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
 
       hideTabIndexes('fkw-prevent_hideIndexes');
 
-
+      // Focus first element with tabindex inside dialog
+      const tabbAbleElements = dialog.querySelectorAll('[tabindex]');
+      if (tabbAbleElements.length) forceFocus(tabbAbleElements[0] as HTMLElement);
 
       layer.classList.add('fkw-popup-layer--active');
       layer.setAttribute('aria-hidden', 'false');
@@ -181,8 +177,15 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
       if (settings.hideScroll) toggleScroll(true);
     } else {
       //* Close
+      const triggeredBy = document.querySelector('.fkw-popup-trigger_triggeredBy') as HTMLElement;
 
       showTabIndexes();
+
+      // Return focus to element that triggered open
+      if (triggeredBy) {
+        triggeredBy.classList.remove('fkw-popup-trigger_triggeredBy');
+        forceFocus(triggeredBy);
+      }
 
       layer.classList.remove('fkw-popup-layer--active');
       layer.setAttribute('aria-hidden', 'true');
@@ -226,9 +229,22 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
 //* Triggers changes dialog class > dialog observes change > dialog toggle trigger active class
 /** Popup trigger. Already returning button element, nesting anither one can cause Hydration error in Next.JS */
 export const Trigger: React.FC<ITriggerProps> = ({ children, id, className, onClick }) => {
+  const [isInDialog, setIsInDialog] = useState(false);
+
+  useEffect(() => {
+    const trigger = triggerRef.current;
+
+    if (!trigger) return;
+
+    setIsInDialog(Boolean(trigger.closest('.fkw-popup-dialog')));
+  }), []
+
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
   function toggle() {
     const dialog = document.querySelector(`#${id}`) as HTMLDivElement;
-    if (!dialog) throw new Error(`[fkw-popup]: Dialog ${id} is not found`);
+    const trigger = triggerRef.current;
+    if (!dialog || !trigger) throw new Error(`[fkw-popup]: Dialog or trigger for ${id} is not found`);
 
     const layer = dialog.closest('.fkw-popup-layer');
     if (!layer) throw new Error(`[fkw-popup]: Layer for dialog ${id} is not found`);
@@ -240,10 +256,14 @@ export const Trigger: React.FC<ITriggerProps> = ({ children, id, className, onCl
     } else {
       console.warn('[fkw-popup]: Action prevented');
     }
+
+    if (!isInDialog) {
+      trigger.classList.add('fkw-popup-trigger_triggeredBy');
+    }
   }
 
   return (
-    <button className={`fkw-popup-trigger ${className ? className : ''}`} data-fkw-target={id} onClick={() => { toggle(); onClick ? onClick() : null; }} aria-haspopup="dialog" tabIndex={0}>
+    <button className={`fkw-popup-trigger ${className ? className : ''} ${isInDialog ? 'fkw-prevent_hideIndexes' : ''}`} data-fkw-target={id} onClick={() => { toggle(); onClick ? onClick() : null; }} aria-haspopup={isInDialog ? undefined : "dialog"} tabIndex={0} ref={triggerRef}>
       {children}
     </button>
   );
@@ -256,6 +276,21 @@ export const Trigger: React.FC<ITriggerProps> = ({ children, id, className, onCl
 /** Return current value if specified or default if not */
 function setDefault(value: any, initial: any): any {
   return value === undefined ? initial : value;
+}
+
+/** Force element focus */
+export function forceFocus(el: HTMLElement) {
+  let int;
+  let i = 0;
+
+  int = setInterval(() => {
+    if (i !== 5) {
+      el.focus();
+      i++;
+    } else {
+      clearInterval(int);
+    }
+  }, 50);
 }
 
 /** Hide scrollbar with saving scroll width

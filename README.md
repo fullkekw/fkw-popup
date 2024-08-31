@@ -8,6 +8,7 @@ React Popup component written on Typescript. Compatible with Next & Vite!
 - **Closing dialog on Escape or by click on Layout**
 - Smooth scroll hiding without reseting content
 - Manipulating Dialog state out of component
+- Will return focus to the button that triggered opening
 - Possibility to prevent user change state of popup
 - Flexible settings
 - Fancy in-box styling
@@ -18,7 +19,8 @@ React Popup component written on Typescript. Compatible with Next & Vite!
 **[Live examples](https://example.com)**
 
 ## API
-Open popup will hide any elements with tabindex. To prevent this, add ```fkw-prevent_hideIndexes``` class to element with tabindex
+Open popup will hide any elements with tabindex. To prevent this, add ```fkw-prevent_hideIndexes``` class to element with tabindex.
+Trigger which open popup will have ```fkw-popup-trigger_triggeredBy``` class
 
 ## Handlers
 ```ts
@@ -35,6 +37,9 @@ export function hideTabIndexes(except?: string)
 
 /** Return tab indexes from data-fkw-prevTabIndex */
 export function showTabIndexes()
+
+/** Force element focus */
+export function forceFocus(el: HTMLElement)
 ```
 
 ## Get it now!
