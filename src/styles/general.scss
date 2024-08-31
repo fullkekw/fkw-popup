@@ -1,3 +1,8 @@
+//! ----------------------------------
+//! DEV PURPOSES ONLY
+//! NOT TO BE COMPILED
+//! ----------------------------------
+
 $fontFamily: 'system-ui', 'sans-serif';
 $fontColor: #000;
 $fontSize: 16px;
@@ -65,6 +70,6 @@ i {
   font-style: italic;
 }
 
-input, button {
+input {
   outline: none;
 }

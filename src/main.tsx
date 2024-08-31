@@ -1,3 +1,8 @@
+//! ----------------------------------
+//! DEV PURPOSES ONLY
+//! NOT FOR REVIEWING
+//! ----------------------------------
+
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 

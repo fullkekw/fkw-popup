@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Layer, Dialog, Trigger, createfkwID } from "../index";
+//! ----------------------------------
+//! DEV PURPOSES ONLY
+//! NOT FOR REVIEWING
+//! ----------------------------------
 
+import React, { useState, useEffect } from "react";
+import { Layer, Dialog, Trigger } from "../index";
 
 const Home: React.FC = () => {
   const [id_1] = useState<string>('popup-1');
   const [id_2] = useState<string>('popup-2');
   const [p1State, setP1State] = useState(true);
-
-  useEffect(() => console.log(`OUT - ${p1State}`), [p1State]);
 
   return (
     <div className="Home bg-slate-400 w-full h-full min-h-screen">

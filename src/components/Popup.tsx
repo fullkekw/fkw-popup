@@ -69,7 +69,7 @@ export const Layer: React.FC<ILayerProps> = ({ children, settings, className }) 
   settings.exitOnLayer = setDefault(settings.exitOnLayer, true);
 
   return (
-    <div className={`fkw-popup-layer ${className ? className : ''}`} data-fkw-settings={JSON.stringify(settings)} aria-hidden style={{ cursor: settings.exitOnLayer ? 'pointer' : 'auto' }}>
+    <div className={`fkw-popup-layer ${className ? className : ''}`} data-fkw-settings={JSON.stringify(settings)} aria-hidden style={{ cursor: settings.exitOnLayer ? 'pointer' : 'auto' }} tabIndex={settings.exitOnLayer ? 0 : -1}>
       {children}
     </div>
   );
@@ -97,6 +97,12 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
 
     observer.observe(dialog, {
       attributes: true
+    });
+
+    const triggersInside = dialog.querySelectorAll('.fkw-popup-trigger');
+
+    triggersInside.forEach(el => {
+      el.classList.add('fkw-prevent_hideIndexes');
     });
   }, []);
 
@@ -151,7 +157,7 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
     const dialog = dialogRef.current;
     if (!dialog) return console.warn(`[fkw-popup]: Dialog ${id} ref is not found`);
 
-    const layer = dialog.closest('.fkw-popup-layer');
+    const layer = dialog.closest('.fkw-popup-layer') as HTMLDivElement;
     const triggers = document.querySelectorAll(`[data-fkw-target="${id}"]`);
     if (!layer || !triggers.length) return console.warn(`[fkw-popup]: Layer or triggers for dialog ${id} is not found`);
 
@@ -159,6 +165,10 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
 
     if (isOpen) {
       //* Open
+
+      hideTabIndexes('fkw-prevent_hideIndexes');
+
+
 
       layer.classList.add('fkw-popup-layer--active');
       layer.setAttribute('aria-hidden', 'false');
@@ -171,6 +181,8 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
       if (settings.hideScroll) toggleScroll(true);
     } else {
       //* Close
+
+      showTabIndexes();
 
       layer.classList.remove('fkw-popup-layer--active');
       layer.setAttribute('aria-hidden', 'true');
@@ -203,7 +215,7 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
 
 
   return (
-    <div className={`fkw-popup-dialog ${className ? className : ''}`} id={id} ref={dialogRef} role="dialog" aria-modal aria-hidden>
+    <div className={`fkw-popup-dialog ${className ? className : ''} fkw-prevent_hideIndexes`} id={id} ref={dialogRef} role="dialog" aria-modal aria-hidden>
       {children}
     </div>
   );
@@ -261,4 +273,26 @@ export function toggleScroll(hide: boolean, extendElement?: HTMLElement) {
     document.body.style.overflowY = 'visible';
     extendElement.style.paddingRight = '0';
   }
+}
+
+/** Hide tab indexes 
+ * @param except Class that this function will pass. Will except fkw-prevent_hideIndexes by default
+*/
+export function hideTabIndexes(except?: string) {
+  const elements: HTMLElement[] = [];
+
+  (document.querySelectorAll('[tabindex]') as NodeListOf<HTMLElement>).forEach(el => el.classList.contains(except || 'fkw-prevent_hideIndexes') || el.classList.contains('fkw-prevent_hideIndexes') ? null : elements.push(el));
+
+  elements.forEach(el => {
+    el.setAttribute('fkw-prevTabIndex', el.getAttribute('tabindex')!);
+    el.setAttribute('tabindex', '-1');
+  });
+}
+
+/** Return tab indexes */
+export function showTabIndexes() {
+  (document.querySelectorAll('[fkw-prevTabIndex]') as NodeListOf<HTMLElement>).forEach(el => {
+    el.setAttribute('tabindex', el.getAttribute('fkw-prevTabIndex')!);
+    el.removeAttribute('fkw-prevTabIndex');
+  });
 }
