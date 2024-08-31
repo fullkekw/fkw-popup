@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Layer, Dialog, Trigger, createUVCID } from "../index";
+import { Layer, Dialog, Trigger, createfkwID } from "../index";
 
 
 const Home: React.FC = () => {
@@ -7,11 +7,11 @@ const Home: React.FC = () => {
   const [id_2] = useState<string>('popup-2');
   const [p1State, setP1State] = useState(true);
 
-  useEffect(() => console.log(`OUT - ${p1State}`), [p1State])
+  useEffect(() => console.log(`OUT - ${p1State}`), [p1State]);
 
   return (
     <div className="Home bg-slate-400 w-full h-full min-h-screen">
-      <Layer className="uvc-popup--fancy" settings={{}}>
+      <Layer className="fkw-popup--fancy" settings={{}}>
         <Dialog id={id_1} stateSetter={setP1State}>
           <p>DIALOG 1</p>
 

@@ -1,8 +1,16 @@
 {
-  "name": "uvc-popup",
+  "name": "@fullkekw/fkw-popup",
   "version": "1.1.0",
-  "description": "Simple react popup written on typescript!",
-  "keywords": ["uvc", "react-component", "popup", "modal", "dialog"],
+  "description": "React Popup component written on Typescript. Compatible with Next & Vite!",
+  "keywords": [
+    "fkw",
+    "react-component",
+    "popup",
+    "modal",
+    "dialog",
+    "wai-aria popup"
+  ],
+  "repository": "https://github.com/fullkekw/fkw-popup",
   "license": "MIT",
   "author": "unniiiverse",
   "type": "module",
@@ -25,13 +33,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "uuid": "^10.0.0"
+    "react": "^18.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
-    "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
     "@vitejs/plugin-react-swc": "^3.0.0",

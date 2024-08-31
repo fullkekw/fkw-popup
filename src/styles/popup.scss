@@ -1,4 +1,4 @@
-.uvc-popup {
+.fkw-popup {
   &-layer {
     position: fixed;
     z-index: 10000;
@@ -36,14 +36,14 @@
   &-trigger {}
 
   &--fancy {
-    // Styles for uvc-popup-layer
+    // Styles for fkw-popup-layer
     backdrop-filter: blur(64px);
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 16px;
 
-    .uvc-popup {
+    .fkw-popup {
       &-dialog {
         padding: 16px 24px;
         background: #121212;

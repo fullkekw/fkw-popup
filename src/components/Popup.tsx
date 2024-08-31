@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef, HTMLProps } from "react";
-import * as uuid from 'uuid';
 
 import '../styles/popup.scss';
 
 export interface IPopupSettings {
-  /** Hide body scroll when popup active
+  /** Hide body scroll when popup isactive
    * @default true
    */
   hideScroll?: boolean
@@ -14,7 +13,7 @@ export interface IPopupSettings {
    */
   exitOnEscape?: boolean
 
-  /** Close popup on clicking on layer
+  /** Close popup by clicking on the layer
    * @default true
    */
   exitOnLayer?: boolean
@@ -70,7 +69,7 @@ export const Layer: React.FC<ILayerProps> = ({ children, settings, className }) 
   settings.exitOnLayer = setDefault(settings.exitOnLayer, true);
 
   return (
-    <div className={`uvc-popup-layer ${className ? className : ''}`} data-uvc-settings={JSON.stringify(settings)} aria-hidden>
+    <div className={`fkw-popup-layer ${className ? className : ''}`} data-fkw-settings={JSON.stringify(settings)} aria-hidden style={{ cursor: settings.exitOnLayer ? 'pointer' : 'auto' }}>
       {children}
     </div>
   );
@@ -90,10 +89,10 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
   useEffect(() => {
     const dialog = dialogRef.current;
 
-    if (!dialog) return console.warn(`[uvc-popup]: Dialog ${id} ref is not found`);
+    if (!dialog) return console.warn(`[fkw-popup]: Dialog ${id} ref is not found`);
 
     const observer = new MutationObserver(e => {
-      setIsOpen(dialog.classList.contains('uvc-popup-dialog--active'));
+      setIsOpen(dialog.classList.contains('fkw-popup-dialog--active'));
     });
 
     observer.observe(dialog, {
@@ -104,12 +103,12 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
   // Handle events
   useEffect(() => {
     const dialog = dialogRef.current;
-    if (!dialog) return console.warn(`[uvc-popup]: Dialog ${id} ref is not found`);
+    if (!dialog) return console.warn(`[fkw-popup]: Dialog ${id} ref is not found`);
 
-    const layer = dialog.closest('.uvc-popup-layer');
-    if (!layer) return console.warn(`[uvc-popup]: Layer for dialog ${id} is not found`);
+    const layer = dialog.closest('.fkw-popup-layer');
+    if (!layer) return console.warn(`[fkw-popup]: Layer for dialog ${id} is not found`);
 
-    const settings = JSON.parse(layer.getAttribute('data-uvc-settings') || '{}') as IPopupSettings;
+    const settings = JSON.parse(layer.getAttribute('data-fkw-settings') || '{}') as IPopupSettings;
 
     window.addEventListener('click', handleClick);
     window.addEventListener('keydown', handleKeyboard);
@@ -121,9 +120,9 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
         if (!settings.exitOnEscape) return;
 
         if (!settings.preventUserInteractions) {
-          dialog!.classList.remove('uvc-popup-dialog--active');
+          dialog!.classList.remove('fkw-popup-dialog--active');
         } else {
-          console.warn('[uvc-popup]: Action prevented');
+          console.warn('[fkw-popup]: Action prevented');
         }
       }
     }
@@ -132,12 +131,12 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
       const self = e.target as HTMLElement;
 
       if (!settings.exitOnLayer) return;
-      if (!self.classList.contains('uvc-popup-layer')) return;
+      if (!self.classList.contains('fkw-popup-layer')) return;
 
       if (!settings.preventUserInteractions) {
-        dialog!.classList.remove('uvc-popup-dialog--active');
+        dialog!.classList.remove('fkw-popup-dialog--active');
       } else {
-        console.warn('[uvc-popup]: Action prevented');
+        console.warn('[fkw-popup]: Action prevented');
       }
     }
 
@@ -150,35 +149,35 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
   // State handling
   useEffect(() => {
     const dialog = dialogRef.current;
-    if (!dialog) return console.warn(`[uvc-popup]: Dialog ${id} ref is not found`);
+    if (!dialog) return console.warn(`[fkw-popup]: Dialog ${id} ref is not found`);
 
-    const layer = dialog.closest('.uvc-popup-layer');
-    const triggers = document.querySelectorAll(`[data-uvc-target="${id}"]`);
-    if (!layer || !triggers.length) return console.warn(`[uvc-popup]: Layer or triggers for dialog ${id} is not found`);
+    const layer = dialog.closest('.fkw-popup-layer');
+    const triggers = document.querySelectorAll(`[data-fkw-target="${id}"]`);
+    if (!layer || !triggers.length) return console.warn(`[fkw-popup]: Layer or triggers for dialog ${id} is not found`);
 
-    const settings = JSON.parse(layer.getAttribute('data-uvc-settings') || '{}') as IPopupSettings;
+    const settings = JSON.parse(layer.getAttribute('data-fkw-settings') || '{}') as IPopupSettings;
 
     if (isOpen) {
       //* Open
 
-      layer.classList.add('uvc-popup-layer--active');
+      layer.classList.add('fkw-popup-layer--active');
       layer.setAttribute('aria-hidden', 'false');
       dialog.setAttribute('aria-hidden', 'false');
 
       triggers.forEach(trigger => {
-        trigger.classList.add('uvc-popup-trigger--active');
+        trigger.classList.add('fkw-popup-trigger--active');
       });
 
       if (settings.hideScroll) toggleScroll(true);
     } else {
       //* Close
 
-      layer.classList.remove('uvc-popup-layer--active');
+      layer.classList.remove('fkw-popup-layer--active');
       layer.setAttribute('aria-hidden', 'true');
       dialog.setAttribute('aria-hidden', 'true');
 
       triggers.forEach(trigger => {
-        trigger.classList.remove('uvc-popup-trigger--active');
+        trigger.classList.remove('fkw-popup-trigger--active');
       });
 
       if (settings.hideScroll) toggleScroll(false);
@@ -193,18 +192,18 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
   // Sync inner state
   useEffect(() => {
     const dialog = dialogRef.current;
-    if (!dialog) return console.warn(`[uvc-popup]: Dialog ${id} ref is not found`);
+    if (!dialog) return console.warn(`[fkw-popup]: Dialog ${id} ref is not found`);
 
     if (stateSetter && state !== undefined) {
-      if (state) dialog.classList.add('uvc-popup-dialog--active');
-      if (!state) dialog.classList.remove('uvc-popup-dialog--active');
+      if (state) dialog.classList.add('fkw-popup-dialog--active');
+      if (!state) dialog.classList.remove('fkw-popup-dialog--active');
     }
   }, [state]);
 
 
 
   return (
-    <div className={`uvc-popup-dialog ${className ? className : ''}`} id={id} ref={dialogRef} role="dialog" aria-modal aria-hidden>
+    <div className={`fkw-popup-dialog ${className ? className : ''}`} id={id} ref={dialogRef} role="dialog" aria-modal aria-hidden>
       {children}
     </div>
   );
@@ -213,26 +212,26 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
 
 
 //* Triggers changes dialog class > dialog observes change > dialog toggle trigger active class
-/** Popup trigger */
+/** Popup trigger. Already returning button element, nesting anither one can cause Hydration error in Next.JS */
 export const Trigger: React.FC<ITriggerProps> = ({ children, id, className, onClick }) => {
   function toggle() {
     const dialog = document.querySelector(`#${id}`) as HTMLDivElement;
-    if (!dialog) throw new Error(`[uvc-popup]: Dialog ${id} is not found`);
+    if (!dialog) throw new Error(`[fkw-popup]: Dialog ${id} is not found`);
 
-    const layer = dialog.closest('.uvc-popup-layer');
-    if (!layer) throw new Error(`[uvc-popup]: Layer for dialog ${id} is not found`);
+    const layer = dialog.closest('.fkw-popup-layer');
+    if (!layer) throw new Error(`[fkw-popup]: Layer for dialog ${id} is not found`);
 
-    const settings = JSON.parse(layer.getAttribute('data-uvc-settings') || '{}') as IPopupSettings;
+    const settings = JSON.parse(layer.getAttribute('data-fkw-settings') || '{}') as IPopupSettings;
 
     if (!settings.preventUserInteractions) {
-      dialog.classList.toggle('uvc-popup-dialog--active');
+      dialog.classList.toggle('fkw-popup-dialog--active');
     } else {
-      console.warn('[uvc-popup]: Action prevented');
+      console.warn('[fkw-popup]: Action prevented');
     }
   }
 
   return (
-    <button className={`uvc-popup-trigger ${className ? className : ''}`} data-uvc-target={id} onClick={() => { toggle(); onClick ? onClick() : null }} aria-haspopup="dialog" tabIndex={0}>
+    <button className={`fkw-popup-trigger ${className ? className : ''}`} data-fkw-target={id} onClick={() => { toggle(); onClick ? onClick() : null; }} aria-haspopup="dialog" tabIndex={0}>
       {children}
     </button>
   );
@@ -242,70 +241,9 @@ export const Trigger: React.FC<ITriggerProps> = ({ children, id, className, onCl
 
 
 //* Handlers
-// /** Toggle popup
-//  * @param id Popup ID
-//  * @param hide Specify toggle action
-//  */
-// export function togglePopup(id: string, hide?: boolean) {
-//   const popup = document.querySelector(`#${id}`) as HTMLDivElement | undefined;
-//   if (!popup) throw new Error(`[UVC-Popup]: Can not find popup with id #${id}`);
-
-//   const layer = popup.closest('.uvc-popup-layer') as HTMLDivElement | undefined;
-//   if (!layer) throw new Error(`[UVC-Popup]: Can not find layer for popup with id #${id}`);
-
-//   const settings = JSON.parse(layer.getAttribute('data-uvc-popup-settings')!) as IPopupSettings;
-//   const triggers = document.querySelectorAll(`[data-uvc-popup-target="${id}"]`);
-
-
-
-//   // Define action
-//   if (hide || popup.classList.contains('uvc-popup--active')) {
-//     // Hide
-//     popup.classList.remove('uvc-popup--active');
-//     popup.setAttribute('aria-hidden', 'true');
-
-//     triggers.forEach(trigger => {
-//       trigger.classList.remove('uvc-popup-trigger--active');
-//     });
-//   } else {
-//     // Show
-//     popup.classList.add('uvc-popup--active');
-//     popup.setAttribute('aria-hidden', 'false');
-
-//     triggers.forEach(trigger => {
-//       trigger.classList.add('uvc-popup-trigger--active');
-//     });
-//   }
-
-
-
-//   // Toggle layer
-//   let isLayerActive = false;
-
-//   layer.childNodes.forEach(node => {
-//     const child = node as HTMLDivElement;
-
-//     if (child.classList.contains('uvc-popup--active')) isLayerActive = true;
-//   });
-
-//   if (isLayerActive) {
-//     // Show
-//     layer.classList.add('uvc-popup-layer--active');
-//     layer.setAttribute('aria-hidden', 'true');
-
-//     if (settings.scrollBehaivour === 'hide') toggleScroll(true, layer);
-//   } else {
-//     // Hide
-//     layer.classList.remove('uvc-popup-layer--active');
-//     layer.setAttribute('aria-hidden', 'false');
-
-//     if (settings.scrollBehaivour === 'hide') toggleScroll(false, layer);
-//   }
-// }
-
 /** Return current value if specified or default if not */
 function setDefault(value: any, initial: any): any {
-  return value === undefined ? initial : value
+  return value === undefined ? initial : value;
 }
 
 /** Hide scrollbar with saving scroll width
@@ -323,8 +261,4 @@ export function toggleScroll(hide: boolean, extendElement?: HTMLElement) {
     document.body.style.overflowY = 'visible';
     extendElement.style.paddingRight = '0';
   }
-}
-
-export function createUVCID() {
-  return `uvc-${uuid.v4()}`;
 }
