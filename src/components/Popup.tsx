@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef, HTMLProps } from "react";
 import '../styles/popup.scss';
 
 export interface IPopupSettings {
-  /** Hide body scroll when popup isactive
+  /** Hide body scroll when popup is active
    * @default true
    */
   hideScroll?: boolean
@@ -237,7 +237,7 @@ export const Trigger: React.FC<ITriggerProps> = ({ children, id, className, onCl
     if (!trigger) return;
 
     setIsInDialog(Boolean(trigger.closest('.fkw-popup-dialog')));
-  }), []
+  }), [];
 
   const triggerRef = useRef<HTMLButtonElement>(null);
 

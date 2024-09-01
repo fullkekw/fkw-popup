@@ -6,6 +6,8 @@
 import React, { useState, useEffect } from "react";
 import { Layer, Dialog, Trigger } from "../index";
 
+import './styles/popup.scss'
+
 const Home: React.FC = () => {
   const [id_1] = useState<string>('popup-1');
   const [id_2] = useState<string>('popup-2');
