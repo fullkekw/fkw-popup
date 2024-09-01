@@ -303,9 +303,11 @@ export function toggleScroll(hide: boolean, extendElement?: HTMLElement) {
 
   if (hide) {
     document.body.style.overflowY = 'hidden';
+    document.documentElement.style.overflowY = 'hidden';
     extendElement.style.paddingRight = `${offset}px`;
   } else {
     document.body.style.overflowY = 'visible';
+    document.documentElement.style.overflowY = 'visible';
     extendElement.style.paddingRight = '0';
   }
 }

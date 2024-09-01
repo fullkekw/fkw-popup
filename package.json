@@ -1,6 +1,6 @@
 {
   "name": "@fullkekw/fkw-popup",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "React Popup component written on Typescript. Compatible with Next & Vite!",
   "keywords": [
     "fkw",

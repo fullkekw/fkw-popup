@@ -1,4 +1,4 @@
-![cover](./cover.png)
+![cover](https://raw.githubusercontent.com/fullkekw/fkw-popup/main/cover.png)
 
 React Popup component written on Typescript. Compatible with Next & Vite!
 
