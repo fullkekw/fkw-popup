@@ -6,7 +6,7 @@
 import React, { useState, useEffect } from "react";
 import { Layer, Dialog, Trigger } from "../index";
 
-import './styles/popup.scss'
+import './styles/popup.scss';
 
 const Home: React.FC = () => {
   const [id_1] = useState<string>('popup-1');
@@ -14,7 +14,7 @@ const Home: React.FC = () => {
   const [p1State, setP1State] = useState(true);
 
   return (
-    <div className="Home bg-slate-400 w-full h-full min-h-screen">
+    <div className="Home bg-slate-400 w-full h-full min-h-screen" id="screen">
       <Layer className="fkw-popup--fancy" settings={{}}>
         <Dialog id={id_1} stateSetter={setP1State}>
           <p>DIALOG 1</p>

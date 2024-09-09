@@ -25,11 +25,15 @@
     visibility: hidden;
     position: absolute;
     cursor: auto;
+    pointer-events: none;
+    touch-action: none;
 
     &--active {
       opacity: 1;
       visibility: visible;
       position: relative;
+      pointer-events: auto;
+      touch-action: auto;
     }
   }
 

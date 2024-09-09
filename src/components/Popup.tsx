@@ -8,6 +8,11 @@ export interface IPopupSettings {
    */
   hideScroll?: boolean
 
+  /** Extend element ID to save scroll width
+   * @default body
+   */
+  scrollExtendElementID?: string
+
   /** Close popup on escape
    * @default true
    */
@@ -67,6 +72,7 @@ export const Layer: React.FC<ILayerProps> = ({ children, settings, className }) 
   settings.hideScroll = setDefault(settings.hideScroll, true);
   settings.preventUserInteractions = setDefault(settings.preventUserInteractions, false);
   settings.exitOnLayer = setDefault(settings.exitOnLayer, true);
+  settings.scrollExtendElementID = setDefault(settings.scrollExtendElementID, undefined);
 
   return (
     <div className={`fkw-popup-layer ${className ? className : ''}`} data-fkw-settings={JSON.stringify(settings)} aria-hidden style={{ cursor: settings.exitOnLayer ? 'pointer' : 'auto' }} tabIndex={settings.exitOnLayer ? 0 : -1}>
@@ -156,6 +162,7 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
     if (!layer || !triggers.length) return console.warn(`[fkw-popup]: Layer or triggers for dialog ${id} is not found`);
 
     const settings = JSON.parse(layer.getAttribute('data-fkw-settings') || '{}') as IPopupSettings;
+    const extendElement = (document.querySelector(`#${settings.scrollExtendElementID}`) || document.body) as HTMLElement;
 
     if (isOpen) {
       //* Open
@@ -174,7 +181,7 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
         trigger.classList.add('fkw-popup-trigger--active');
       });
 
-      if (settings.hideScroll) toggleScroll(true);
+      if (settings.hideScroll) toggleScroll(true, extendElement);
     } else {
       //* Close
       const triggeredBy = document.querySelector('.fkw-popup-trigger_triggeredBy') as HTMLElement;
@@ -195,7 +202,7 @@ export const Dialog: React.FC<IDialogProps> = ({ children, id, state, stateSette
         trigger.classList.remove('fkw-popup-trigger--active');
       });
 
-      if (settings.hideScroll) toggleScroll(false);
+      if (settings.hideScroll) toggleScroll(false, extendElement);
     }
   }, [isOpen]);
 
