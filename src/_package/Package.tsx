@@ -90,7 +90,7 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ex
     const layer = layerRef.current as HTMLDivElement;
     const dialogs = layer.querySelectorAll(`.${CLASS.DIALOG}`);
 
-    if (!layer.classList.contains(CLASS.DIALOG_ACTIVE)) return;
+    if (!layer.classList.contains(CLASS.LAYER_ACTIVE)) return;
 
     dialogs.forEach(el => {
       if (el.classList.contains(CLASS.DIALOG_ACTIONS_PREVENTED)) return;
@@ -105,7 +105,7 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ex
   </div>;
 };
 
-export const PopupDialog: React.FC<IPopupDialogProps> = ({ children, className, id, preventUserInteractions, ...props }) => {
+export const PopupDialog: React.FC<IPopupDialogProps> = ({ children, className, id, preventUserInteractions, state, stateSetter, ...props }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -141,16 +141,44 @@ export const PopupDialog: React.FC<IPopupDialogProps> = ({ children, className, 
     });
   }, []);
 
+  // Handle isOpen
   useEffect(() => {
     console.log(`dialog - `, isOpen);
+
+    const buttons = document.querySelectorAll(`[data-fkw-popup-dialog="${id}"]`);
+
+    buttons.forEach(button => {
+      if (isOpen) {
+        button.classList.add('fkw-popup-button--active');
+      } else {
+        button.classList.remove('fkw-popup-button--active');
+      }
+    });
   }, [isOpen]);
+
+  //* Sync inner state when out changed
+  useEffect(() => {
+    if (state === undefined) return;
+
+    setIsOpen(state);
+  }, [state]);
 
 
 
   function toggle(forceState?: boolean) {
     const to = forceState ?? !isOpen;
 
-    setIsOpen(to);
+    if (stateSetter !== undefined && state !== undefined) {
+      //* Sync only out state with inner
+      stateSetter(to);
+    } else if (stateSetter !== undefined && state === undefined) {
+      //* Sync both states
+      stateSetter(to);
+      setIsOpen(to);
+    } else {
+      //* Sync only inner state with out
+      setIsOpen(to);
+    }
   }
 
 

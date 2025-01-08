@@ -73,3 +73,8 @@ i {
 input {
   outline: none;
 }
+
+button,
+button * {
+  user-select: none;
+}

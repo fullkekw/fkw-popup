@@ -22,6 +22,12 @@ export interface IPopupDialogProps extends React.DetailsHTMLAttributes<HTMLDivEl
 
   /** Prevent user from toggling popup */
   preventUserInteractions?: boolean
+
+  /** Sync out state with current dialog state */
+  state?: boolean
+
+  /** Sync out state with current dialog state */
+  stateSetter?: (state: boolean) => void
 }
 
 export interface IPopupButtonProps extends React.DetailsHTMLAttributes<HTMLButtonElement> {
