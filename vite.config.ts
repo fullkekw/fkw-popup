@@ -1,16 +1,18 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
-// @ts-expect-error bla
-import path from 'path';
 import dts from 'vite-plugin-dts';
+
+// @ts-expect-error resolve unresolvable
+import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
     lib: {
-      entry: `${path.resolve()}/index.ts`,
-      name: 'template',
+      entry: `${path.resolve()}/src/_package/index.ts`,
+      name: 'PACKAGE_NAME',
       fileName: (format) => `index.${format}.js`,
+      cssFileName: 'styles'
     },
     rollupOptions: {
       external: ['react', 'react-dom'],

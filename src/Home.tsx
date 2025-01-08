@@ -1,47 +1,35 @@
-//! ----------------------------------
-//! DEV PURPOSES ONLY
-//! NOT FOR REVIEWING
-//! ----------------------------------
-
 import React, { useState, useEffect } from "react";
-import { Layer, Dialog, Trigger } from "../index";
+import { PopupButton, PopupDialog, PopupLayer, } from "./_package/index";
 
-import './styles/popup.scss';
+
 
 const Home: React.FC = () => {
-  const [id_1] = useState<string>('popup-1');
-  const [id_2] = useState<string>('popup-2');
-  const [p1State, setP1State] = useState(true);
+  const popupId1 = 'popup-1';
+  const popupId2 = 'popup-2';
 
   return (
     <div className="Home bg-slate-400 w-full h-full min-h-screen" id="screen">
-      <Layer className="fkw-popup--fancy" settings={{}}>
-        <Dialog id={id_1} stateSetter={setP1State}>
-          <p>DIALOG 1</p>
+      <PopupLayer className="flex items-center justify-center">
+        <PopupDialog className="w-[500px] h-[200px] bg-white" id={popupId1}>
+          <PopupButton togglePopupId={popupId1}>
+            <p>close 1</p>
+          </PopupButton>
+        </PopupDialog>
 
-          <Trigger id={id_1}>
-            <p>TRIGGER 1</p>
-          </Trigger>
-        </Dialog>
+        <PopupDialog className="w-[500px] h-[200px] bg-white" id={popupId2}>
+          <PopupButton togglePopupId={popupId2}>
+            <p>close 2</p>
+          </PopupButton>
+        </PopupDialog>
+      </PopupLayer>
 
-        <Dialog id={id_2}>
-          <p>DIALOG 2</p>
+      <PopupButton togglePopupId={popupId1}>
+        <p>open popup 1</p>
+      </PopupButton>
 
-          <Trigger id={id_2}>
-            <p>TRIGGER 2</p>
-          </Trigger>
-        </Dialog>
-      </Layer>
-
-      <Trigger id={id_1}>
-        <p>TRIGGER 1</p>
-      </Trigger>
-
-      <Trigger id={id_2}>
-        <p>TRIGGER 2</p>
-      </Trigger>
-
-      <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      <PopupButton togglePopupId={popupId2}>
+        <p>open popup 2</p>
+      </PopupButton>
     </div>
   );
 };
