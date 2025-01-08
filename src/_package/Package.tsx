@@ -8,10 +8,13 @@ import { EFKW } from '../components/handlers';
 
 
 
-export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ...props }) => {
+export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, exitOnEscape, exitOnLayer, ...props }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const layerRef = useRef<HTMLDivElement>(null);
+
+  exitOnEscape = exitOnEscape ?? true;
+  exitOnLayer = exitOnLayer ?? true;
 
 
   // Init
@@ -23,7 +26,7 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ..
     if (!dialogs.length) throw new EFKW(`At least one dialog must be present inside PopupLayer`);
   }, []);
 
-  // Observe mutations
+  // Observe mutations & handle click/keypress
   useEffect(() => {
     const layer = layerRef.current as HTMLDivElement;
 
@@ -33,7 +36,7 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ..
       let isPopupActive = false;
 
       dialogs.forEach(dialog => {
-        if (dialog.classList.contains('fkw-popup-dialog--active')) isPopupActive = true;
+        if (dialog.classList.contains('fkw-popup-dialog--active') && !dialog.classList.contains('fkw-popup-dialog--actionsPrevented')) isPopupActive = true;
       });
 
       setIsOpen(isPopupActive);
@@ -44,6 +47,20 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ..
       subtree: true,
       attributes: true
     });
+
+    // Hadnle click/keypress
+    layer.addEventListener('click', e => {
+      const self = e.target as HTMLDivElement | undefined;
+      if (!self) return;
+
+      if (self.classList.contains('fkw-popup-layer')) closeAll();
+    });
+
+    window.addEventListener('keydown', e => {
+      const key = e.key;
+
+      if (key === 'Escape') closeAll();
+    });
   }, []);
 
   useEffect(() => {
@@ -52,12 +69,26 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ..
 
 
 
-  return <div className={cn("fkw-popup-layer", isOpen && 'fkw-popup-layer--active', className)} ref={layerRef} {...props}>
+  function closeAll() {
+    const layer = layerRef.current as HTMLDivElement;
+    const dialogs = layer.querySelectorAll(`.fkw-popup-dialog`);
+
+    if (!layer.classList.contains('fkw-popup-layer--active')) return;
+
+    dialogs.forEach(el => {
+      if (el.classList.contains('fkw-popup-dialog--actionsPrevented')) return;
+      el.classList.add('fkw-popup-dialog--close');
+    });
+  }
+
+
+
+  return <div className={cn("fkw-popup-layer", isOpen && 'fkw-popup-layer--active', exitOnLayer && 'fkw-popup-layer--exitOnLayer', className)} ref={layerRef} {...props}>
     {children}
   </div>;
 };
 
-export const PopupDialog: React.FC<IPopupDialogProps> = ({ children, className, id, ...props }) => {
+export const PopupDialog: React.FC<IPopupDialogProps> = ({ children, className, id, preventUserInteractions, ...props }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -74,10 +105,16 @@ export const PopupDialog: React.FC<IPopupDialogProps> = ({ children, className, 
   useEffect(() => {
     const dialog = dialogRef.current as HTMLDivElement;
 
-    const observer = new MutationObserver(() => {
-      if (dialog.classList.contains('fkw-popup-dialog--active')) {
+    const observer = new MutationObserver(mutations => {
+      if (preventUserInteractions) return console.warn(`[fkw-popup]: User action prevented`);
+
+      if (dialog.classList.contains('fkw-popup-dialog--open')) {
+        dialog.classList.remove('fkw-popup-dialog--open');
         toggle(true);
-      } else {
+      }
+
+      if (dialog.classList.contains('fkw-popup-dialog--close')) {
+        dialog.classList.remove('fkw-popup-dialog--close');
         toggle(false);
       }
     });
@@ -101,13 +138,20 @@ export const PopupDialog: React.FC<IPopupDialogProps> = ({ children, className, 
 
 
 
-  return <div className={cn("fkw-popup-dialog", className)} id={id} ref={dialogRef} role='dialog' aria-modal aria-hidden={!isOpen} {...props}>
+  return <div className={cn("fkw-popup-dialog", isOpen && 'fkw-popup-dialog--active', preventUserInteractions && 'fkw-popup-dialog--actionsPrevented', className)} id={id} ref={dialogRef} role='dialog' aria-modal aria-hidden={!isOpen} {...props}>
     {children}
   </div>;
 };
 
-export const PopupButton: React.FC<IPopupButtonProps> = ({ children, className, togglePopupId, ...props }) => {
-  return <button className={cn("fkw-popup-button", className)} onClick={() => togglePopup(togglePopupId)} aria-haspopup="dialog" tabIndex={0} data-fkw-popup-dialog={togglePopupId} {...props}>
+export const PopupButton: React.FC<IPopupButtonProps> = ({ children, className, togglePopupId, disabled, onClick, ...props }) => {
+  function toggle() {
+    if (disabled) return;
+
+    togglePopup(togglePopupId);
+    onClick ? onClick() : null;
+  }
+
+  return <button className={cn("fkw-popup-button", className)} onClick={toggle} aria-haspopup="dialog" tabIndex={0} data-fkw-popup-dialog={togglePopupId} disabled={disabled} {...props}>
     {children}
   </button>;
 };
@@ -118,5 +162,11 @@ function togglePopup(id: string) {
   const dialog = document.querySelector(`#${id}`) as HTMLDivElement;
   if (!dialog) throw new EFKW(`Dialog #${id} is not found in DOM`);
 
-  dialog.classList.toggle(`fkw-popup-dialog--active`);
+  if (dialog.classList.contains('fkw-popup-dialog--actionsPrevented')) return console.warn(`[fkw-popup]: User action prevented`);
+
+  if (dialog.classList.contains('fkw-popup-dialog--active')) {
+    dialog.classList.add(`fkw-popup-dialog--close`);
+  } else {
+    dialog.classList.add(`fkw-popup-dialog--open`);
+  }
 }

@@ -10,7 +10,7 @@ const Home: React.FC = () => {
   return (
     <div className="Home bg-slate-400 w-full h-full min-h-screen" id="screen">
       <PopupLayer className="flex items-center justify-center">
-        <PopupDialog className="w-[500px] h-[200px] bg-white" id={popupId1}>
+        <PopupDialog className="w-[500px] h-[200px] bg-white" id={popupId1} preventUserInteractions>
           <PopupButton togglePopupId={popupId1}>
             <p>close 1</p>
           </PopupButton>
