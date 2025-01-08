@@ -8,6 +8,23 @@ import { EFKW } from '../components/handlers';
 
 
 
+enum CLASS {
+  LAYER = 'fkw-popup-layer',
+  LAYER_ACTIVE = 'fkw-popup-layer--active',
+  LAYER_EXIT_ON_CLICK = 'fkw-popup-layer--exitOnLayer',
+
+  DIALOG = 'fkw-popup-dialog',
+  DIALOG_ACTIVE = 'fkw-popup-dialog--active',
+  DIALOG_OPEN = 'fkw-popup-dialog--open',
+  DIALOG_CLOSE = 'fkw-popup-dialog--close',
+  DIALOG_ACTIONS_PREVENTED = 'fkw-popup-dialog--actionsPrevented',
+
+  BUTTON = 'fkw-popup-button',
+  BUTTON_ACTIVE = 'fkw-popup-button--active',
+}
+
+
+
 export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, exitOnEscape, exitOnLayer, ...props }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -22,7 +39,7 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ex
     const layer = layerRef.current;
     if (!layer) throw new EFKW(`Layer ref is not found`);
 
-    const dialogs = layer.querySelectorAll(`.fkw-popup-dialog`);
+    const dialogs = layer.querySelectorAll(`.${CLASS.DIALOG}`);
     if (!dialogs.length) throw new EFKW(`At least one dialog must be present inside PopupLayer`);
   }, []);
 
@@ -31,12 +48,12 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ex
     const layer = layerRef.current as HTMLDivElement;
 
     const observer = new MutationObserver(() => {
-      const dialogs = layer.querySelectorAll(`.fkw-popup-dialog`);
+      const dialogs = layer.querySelectorAll(`.${CLASS.DIALOG}`);
 
       let isPopupActive = false;
 
       dialogs.forEach(dialog => {
-        if (dialog.classList.contains('fkw-popup-dialog--active') && !dialog.classList.contains('fkw-popup-dialog--actionsPrevented')) isPopupActive = true;
+        if (dialog.classList.contains(CLASS.DIALOG_ACTIVE) && !dialog.classList.contains(CLASS.DIALOG_ACTIONS_PREVENTED)) isPopupActive = true;
       });
 
       setIsOpen(isPopupActive);
@@ -53,7 +70,7 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ex
       const self = e.target as HTMLDivElement | undefined;
       if (!self) return;
 
-      if (self.classList.contains('fkw-popup-layer')) closeAll();
+      if (self.classList.contains(CLASS.LAYER)) closeAll();
     });
 
     window.addEventListener('keydown', e => {
@@ -71,19 +88,19 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ex
 
   function closeAll() {
     const layer = layerRef.current as HTMLDivElement;
-    const dialogs = layer.querySelectorAll(`.fkw-popup-dialog`);
+    const dialogs = layer.querySelectorAll(`.${CLASS.DIALOG}`);
 
-    if (!layer.classList.contains('fkw-popup-layer--active')) return;
+    if (!layer.classList.contains(CLASS.DIALOG_ACTIVE)) return;
 
     dialogs.forEach(el => {
-      if (el.classList.contains('fkw-popup-dialog--actionsPrevented')) return;
-      el.classList.add('fkw-popup-dialog--close');
+      if (el.classList.contains(CLASS.DIALOG_ACTIONS_PREVENTED)) return;
+      el.classList.add(CLASS.DIALOG_CLOSE);
     });
   }
 
 
 
-  return <div className={cn("fkw-popup-layer", isOpen && 'fkw-popup-layer--active', exitOnLayer && 'fkw-popup-layer--exitOnLayer', className)} ref={layerRef} {...props}>
+  return <div className={cn(CLASS.LAYER, isOpen && CLASS.LAYER_ACTIVE, exitOnLayer && CLASS.LAYER_EXIT_ON_CLICK, className)} ref={layerRef} {...props}>
     {children}
   </div>;
 };
@@ -108,13 +125,13 @@ export const PopupDialog: React.FC<IPopupDialogProps> = ({ children, className, 
     const observer = new MutationObserver(mutations => {
       if (preventUserInteractions) return console.warn(`[fkw-popup]: User action prevented`);
 
-      if (dialog.classList.contains('fkw-popup-dialog--open')) {
-        dialog.classList.remove('fkw-popup-dialog--open');
+      if (dialog.classList.contains(CLASS.DIALOG_OPEN)) {
+        dialog.classList.remove(CLASS.DIALOG_OPEN);
         toggle(true);
       }
 
-      if (dialog.classList.contains('fkw-popup-dialog--close')) {
-        dialog.classList.remove('fkw-popup-dialog--close');
+      if (dialog.classList.contains(CLASS.DIALOG_CLOSE)) {
+        dialog.classList.remove(CLASS.DIALOG_CLOSE);
         toggle(false);
       }
     });
@@ -138,7 +155,7 @@ export const PopupDialog: React.FC<IPopupDialogProps> = ({ children, className, 
 
 
 
-  return <div className={cn("fkw-popup-dialog", isOpen && 'fkw-popup-dialog--active', preventUserInteractions && 'fkw-popup-dialog--actionsPrevented', className)} id={id} ref={dialogRef} role='dialog' aria-modal aria-hidden={!isOpen} {...props}>
+  return <div className={cn(CLASS.DIALOG, isOpen && CLASS.DIALOG_ACTIVE, preventUserInteractions && CLASS.DIALOG_ACTIONS_PREVENTED, className)} id={id} ref={dialogRef} role='dialog' aria-modal aria-hidden={!isOpen} {...props}>
     {children}
   </div>;
 };
@@ -151,7 +168,7 @@ export const PopupButton: React.FC<IPopupButtonProps> = ({ children, className, 
     onClick ? onClick() : null;
   }
 
-  return <button className={cn("fkw-popup-button", className)} onClick={toggle} aria-haspopup="dialog" tabIndex={0} data-fkw-popup-dialog={togglePopupId} disabled={disabled} {...props}>
+  return <button className={cn(CLASS.BUTTON, className)} onClick={toggle} aria-haspopup="dialog" tabIndex={0} data-fkw-popup-dialog={togglePopupId} disabled={disabled} {...props}>
     {children}
   </button>;
 };
@@ -162,11 +179,11 @@ function togglePopup(id: string) {
   const dialog = document.querySelector(`#${id}`) as HTMLDivElement;
   if (!dialog) throw new EFKW(`Dialog #${id} is not found in DOM`);
 
-  if (dialog.classList.contains('fkw-popup-dialog--actionsPrevented')) return console.warn(`[fkw-popup]: User action prevented`);
+  if (dialog.classList.contains(CLASS.DIALOG_ACTIONS_PREVENTED)) return console.warn(`[fkw-popup]: User action prevented`);
 
-  if (dialog.classList.contains('fkw-popup-dialog--active')) {
-    dialog.classList.add(`fkw-popup-dialog--close`);
+  if (dialog.classList.contains(CLASS.DIALOG_ACTIVE)) {
+    dialog.classList.add(CLASS.DIALOG_CLOSE);
   } else {
-    dialog.classList.add(`fkw-popup-dialog--open`);
+    dialog.classList.add(CLASS.DIALOG_OPEN);
   }
 }
