@@ -13,11 +13,21 @@
     touch-action: none;
     background: rgba($color: #000000, $alpha: .3);
 
+    * {
+      touch-action: none;
+      pointer-events: none;
+    }
+
     &--active {
       opacity: 1;
       visibility: visible;
       touch-action: auto;
       pointer-events: auto;
+
+      * {
+        touch-action: auto;
+        pointer-events: auto;
+      }
     }
 
     &--exitOnLayer {
