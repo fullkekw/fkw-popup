@@ -80,10 +80,6 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ex
     });
   }, []);
 
-  useEffect(() => {
-    console.log(`layer - `, isOpen);
-  }, [isOpen]);
-
 
 
   function closeAll() {
@@ -143,8 +139,6 @@ export const PopupDialog: React.FC<IPopupDialogProps> = ({ children, className, 
 
   // Handle isOpen
   useEffect(() => {
-    console.log(`dialog - `, isOpen);
-
     const buttons = document.querySelectorAll(`[data-fkw-popup-dialog="${id}"]`);
 
     buttons.forEach(button => {
