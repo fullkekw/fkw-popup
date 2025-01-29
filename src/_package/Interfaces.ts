@@ -14,6 +14,12 @@ export interface IPopupLayerProps extends React.DetailsHTMLAttributes<HTMLDivEle
    * @default true
    */
   exitOnLayer?: boolean
+
+  /** Prevent scroll from hiding */
+  preventScrollHiding?: boolean
+
+  /** Update out state when inner popups state changed */
+  setIsPopupsOpen?: (state: boolean) => void
 }
 
 export interface IPopupDialogProps extends React.DetailsHTMLAttributes<HTMLDivElement> {

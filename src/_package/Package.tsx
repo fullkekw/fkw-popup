@@ -25,7 +25,7 @@ enum CLASS {
 
 
 
-export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, exitOnEscape, exitOnLayer, ...props }) => {
+export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, exitOnEscape, exitOnLayer, setIsPopupsOpen, preventScrollHiding, ...props }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const layerRef = useRef<HTMLDivElement>(null);
@@ -53,7 +53,7 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ex
       let isPopupActive = false;
 
       dialogs.forEach(dialog => {
-        if (dialog.classList.contains(CLASS.DIALOG_ACTIVE) && !dialog.classList.contains(CLASS.DIALOG_ACTIONS_PREVENTED)) isPopupActive = true;
+        if (dialog.classList.contains(CLASS.DIALOG_ACTIVE)) isPopupActive = true;
       });
 
       setIsOpen(isPopupActive);
@@ -66,7 +66,9 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ex
     });
 
     // Hadnle click/keypress
-    layer.addEventListener('click', e => {
+    layer.addEventListener('mousedown', e => {
+      if (!exitOnLayer) return;
+
       const self = e.target as HTMLDivElement | undefined;
       if (!self) return;
 
@@ -74,11 +76,28 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ex
     });
 
     window.addEventListener('keydown', e => {
+      if (!exitOnEscape) return;
+
       const key = e.key;
 
       if (key === 'Escape') closeAll();
     });
   }, []);
+
+  // Handle isOpen & setIsPopupsOpen
+  useEffect(() => {
+    if (!preventScrollHiding) {
+      if (isOpen) {
+        document.documentElement.style.overflowY = 'hidden';
+        document.body.style.overflowY = 'hidden';
+      } else {
+        document.documentElement.style.overflowY = 'visible';
+        document.body.style.overflowY = 'visible';
+      }
+    }
+
+    if (setIsPopupsOpen) setIsPopupsOpen(isOpen);
+  }, [isOpen]);
 
 
 
@@ -118,7 +137,7 @@ export const PopupDialog: React.FC<IPopupDialogProps> = ({ children, className, 
   useEffect(() => {
     const dialog = dialogRef.current as HTMLDivElement;
 
-    const observer = new MutationObserver(mutations => {
+    const observer = new MutationObserver(() => {
       if (preventUserInteractions) return console.warn(`[fkw-popup]: User action prevented`);
 
       if (dialog.classList.contains(CLASS.DIALOG_OPEN)) {

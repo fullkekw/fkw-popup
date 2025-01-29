@@ -25,11 +25,11 @@ const Home: React.FC = () => {
           </PopupButton>
         </PopupDialog>
 
-        {/* <PopupDialog className="w-[500px] h-[200px] bg-white" id={popupId2}>
+        <PopupDialog className="w-[500px] h-[200px] bg-white" id={popupId2}>
           <PopupButton togglePopupId={popupId2}>
             <p>close 2</p>
           </PopupButton>
-        </PopupDialog> */}
+        </PopupDialog>
       </PopupLayer>
 
       <PopupButton togglePopupId={popupId1}>
@@ -39,6 +39,8 @@ const Home: React.FC = () => {
       <PopupButton togglePopupId={popupId2}>
         <p>open popup 2</p>
       </PopupButton>
+
+      <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
     </div>
   );
 };
