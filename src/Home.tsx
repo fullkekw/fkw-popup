@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useId } from "react";
 import { PopupButton, PopupDialog, PopupLayer, } from "./_package/index";
 
 
@@ -6,8 +6,8 @@ import { PopupButton, PopupDialog, PopupLayer, } from "./_package/index";
 const Home: React.FC = () => {
   const [state, setState] = useState(true);
 
-  const popupId1 = 'popup-1';
-  const popupId2 = 'popup-2';
+  const popupId1 = useId();
+  const popupId2 = useId();
 
 
   useEffect(() => {

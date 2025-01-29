@@ -121,6 +121,8 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ex
 };
 
 export const PopupDialog: React.FC<IPopupDialogProps> = ({ children, className, id, preventUserInteractions, state, stateSetter, ...props }) => {
+  id = id.replaceAll(':', '');
+
   const [isOpen, setIsOpen] = useState(false);
 
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -202,6 +204,8 @@ export const PopupDialog: React.FC<IPopupDialogProps> = ({ children, className, 
 };
 
 export const PopupButton: React.FC<IPopupButtonProps> = ({ children, className, togglePopupId, disabled, onClick, ...props }) => {
+  togglePopupId = togglePopupId.replaceAll(':', '');
+
   function toggle() {
     if (disabled) return;
 
