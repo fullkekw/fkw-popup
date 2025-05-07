@@ -3,29 +3,16 @@ import './styles.scss';
 import React, { useEffect, useRef, useState } from "react";
 import cn from 'classnames';
 
-import { IPopupButtonProps, IPopupDialogProps, IPopupLayerProps } from "./Interfaces";
+import { CN, PopupButtonProps, PopupDialogProps, PopupLayerProps } from "./Interfaces";
 import { EFKW } from '../components/handlers';
 
 
 
-enum CLASS {
-  LAYER = 'fkw-popup-layer',
-  LAYER_ACTIVE = 'fkw-popup-layer--active',
-  LAYER_EXIT_ON_CLICK = 'fkw-popup-layer--exitOnLayer',
-
-  DIALOG = 'fkw-popup-dialog',
-  DIALOG_ACTIVE = 'fkw-popup-dialog--active',
-  DIALOG_OPEN = 'fkw-popup-dialog--open',
-  DIALOG_CLOSE = 'fkw-popup-dialog--close',
-  DIALOG_ACTIONS_PREVENTED = 'fkw-popup-dialog--actionsPrevented',
-
-  BUTTON = 'fkw-popup-button',
-  BUTTON_ACTIVE = 'fkw-popup-button--active',
-}
 
 
 
-export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, exitOnEscape, exitOnLayer, setIsPopupsOpen, preventScrollHiding, ...props }) => {
+
+export const PopupLayer: React.FC<PopupLayerProps> = ({ children, className, exitOnEscape, exitOnLayer, setIsPopupsOpen, preventScrollHiding, ...props }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const layerRef = useRef<HTMLDivElement>(null);
@@ -39,7 +26,7 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ex
     const layer = layerRef.current;
     if (!layer) throw new EFKW(`Layer ref is not found`);
 
-    const dialogs = layer.querySelectorAll(`.${CLASS.DIALOG}`);
+    const dialogs = layer.querySelectorAll(`.${CN.DIALOG}`);
     if (!dialogs.length) throw new EFKW(`At least one dialog must be present inside PopupLayer`);
   }, []);
 
@@ -48,12 +35,12 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ex
     const layer = layerRef.current as HTMLDivElement;
 
     const observer = new MutationObserver(() => {
-      const dialogs = layer.querySelectorAll(`.${CLASS.DIALOG}`);
+      const dialogs = layer.querySelectorAll(`.${CN.DIALOG}`);
 
       let isPopupActive = false;
 
       dialogs.forEach(dialog => {
-        if (dialog.classList.contains(CLASS.DIALOG_ACTIVE)) isPopupActive = true;
+        if (dialog.classList.contains(CN.DIALOG_ACTIVE)) isPopupActive = true;
       });
 
       setIsOpen(isPopupActive);
@@ -72,7 +59,7 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ex
       const self = e.target as HTMLDivElement | undefined;
       if (!self) return;
 
-      if (self.classList.contains(CLASS.LAYER)) closeAll();
+      if (self.classList.contains(CN.LAYER)) closeAll();
     });
 
     window.addEventListener('keydown', e => {
@@ -88,11 +75,9 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ex
   useEffect(() => {
     if (!preventScrollHiding) {
       if (isOpen) {
-        document.documentElement.style.overflowY = 'hidden';
-        document.body.style.overflowY = 'hidden';
+        document.body.classList.add(CN.NOSCROLL);
       } else {
-        document.documentElement.style.overflowY = 'visible';
-        document.body.style.overflowY = 'visible';
+        document.body.classList.remove(CN.NOSCROLL);
       }
     }
 
@@ -103,26 +88,24 @@ export const PopupLayer: React.FC<IPopupLayerProps> = ({ children, className, ex
 
   function closeAll() {
     const layer = layerRef.current as HTMLDivElement;
-    const dialogs = layer.querySelectorAll(`.${CLASS.DIALOG}`);
+    const dialogs = layer.querySelectorAll(`.${CN.DIALOG}`);
 
-    if (!layer.classList.contains(CLASS.LAYER_ACTIVE)) return;
+    if (!layer.classList.contains(CN.LAYER_ACTIVE)) return;
 
     dialogs.forEach(el => {
-      if (el.classList.contains(CLASS.DIALOG_ACTIONS_PREVENTED)) return;
-      el.classList.add(CLASS.DIALOG_CLOSE);
+      if (el.classList.contains(CN.DIALOG_ACTIONS_PREVENTED)) return;
+      el.classList.add(CN.DIALOG_CLOSE);
     });
   }
 
 
 
-  return <div className={cn(CLASS.LAYER, isOpen && CLASS.LAYER_ACTIVE, exitOnLayer && CLASS.LAYER_EXIT_ON_CLICK, className)} ref={layerRef} {...props}>
+  return <div className={cn(CN.LAYER, isOpen && CN.LAYER_ACTIVE, exitOnLayer && CN.LAYER_EXIT_ON_CLICK, className)} ref={layerRef} {...props}>
     {children}
   </div>;
 };
 
-export const PopupDialog: React.FC<IPopupDialogProps> = ({ children, className, id, preventUserInteractions, state, stateSetter, ...props }) => {
-  id = id.replaceAll(':', '');
-
+export const PopupDialog: React.FC<PopupDialogProps> = ({ children, className, id, preventUserInteractions, state, stateSetter, ...props }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -142,13 +125,13 @@ export const PopupDialog: React.FC<IPopupDialogProps> = ({ children, className, 
     const observer = new MutationObserver(() => {
       if (preventUserInteractions) return console.warn(`[fkw-popup]: User action prevented`);
 
-      if (dialog.classList.contains(CLASS.DIALOG_OPEN)) {
-        dialog.classList.remove(CLASS.DIALOG_OPEN);
+      if (dialog.classList.contains(CN.DIALOG_OPEN)) {
+        dialog.classList.remove(CN.DIALOG_OPEN);
         toggle(true);
       }
 
-      if (dialog.classList.contains(CLASS.DIALOG_CLOSE)) {
-        dialog.classList.remove(CLASS.DIALOG_CLOSE);
+      if (dialog.classList.contains(CN.DIALOG_CLOSE)) {
+        dialog.classList.remove(CN.DIALOG_CLOSE);
         toggle(false);
       }
     });
@@ -198,13 +181,13 @@ export const PopupDialog: React.FC<IPopupDialogProps> = ({ children, className, 
 
 
 
-  return <div className={cn(CLASS.DIALOG, isOpen && CLASS.DIALOG_ACTIVE, preventUserInteractions && CLASS.DIALOG_ACTIONS_PREVENTED, className)} id={id} ref={dialogRef} role='dialog' aria-modal aria-hidden={!isOpen} {...props}>
+  return <div className={cn(CN.DIALOG, isOpen && CN.DIALOG_ACTIVE, preventUserInteractions && CN.DIALOG_ACTIONS_PREVENTED, className)} id={id} ref={dialogRef} role='dialog' aria-modal aria-hidden={!isOpen} {...props}>
     {children}
   </div>;
 };
 
-export const PopupButton: React.FC<IPopupButtonProps> = ({ children, className, togglePopupId, disabled, onClick, ...props }) => {
-  togglePopupId = togglePopupId.replaceAll(':', '');
+export const PopupButton: React.FC<PopupButtonProps> = ({ children, className, togglePopupId, disabled, onClick, as, ...props }) => {
+  const Tag: keyof JSX.IntrinsicElements = as ?? 'button';
 
   function toggle() {
     if (disabled) return;
@@ -213,9 +196,9 @@ export const PopupButton: React.FC<IPopupButtonProps> = ({ children, className, 
     onClick ? onClick() : null;
   }
 
-  return <button className={cn(CLASS.BUTTON, className)} onClick={toggle} aria-haspopup="dialog" tabIndex={0} data-fkw-popup-dialog={togglePopupId} disabled={disabled} {...props}>
+  return <Tag className={cn(CN.BUTTON, className)} onClick={toggle} aria-haspopup="dialog" tabIndex={0} data-fkw-popup-dialog={togglePopupId} disabled={disabled} {...props}>
     {children}
-  </button>;
+  </Tag>;
 };
 
 
@@ -224,11 +207,11 @@ function togglePopup(id: string) {
   const dialog = document.querySelector(`#${id}`) as HTMLDivElement;
   if (!dialog) throw new EFKW(`Dialog #${id} is not found in DOM`);
 
-  if (dialog.classList.contains(CLASS.DIALOG_ACTIONS_PREVENTED)) return console.warn(`[fkw-popup]: User action prevented`);
+  if (dialog.classList.contains(CN.DIALOG_ACTIONS_PREVENTED)) return console.warn(`[fkw-popup]: User action prevented`);
 
-  if (dialog.classList.contains(CLASS.DIALOG_ACTIVE)) {
-    dialog.classList.add(CLASS.DIALOG_CLOSE);
+  if (dialog.classList.contains(CN.DIALOG_ACTIVE)) {
+    dialog.classList.add(CN.DIALOG_CLOSE);
   } else {
-    dialog.classList.add(CLASS.DIALOG_OPEN);
+    dialog.classList.add(CN.DIALOG_OPEN);
   }
 }

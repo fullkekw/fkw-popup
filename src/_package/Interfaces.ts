@@ -2,7 +2,25 @@ import React from "react";
 
 
 
-export interface IPopupLayerProps extends React.DetailsHTMLAttributes<HTMLDivElement> {
+/** Enum of package classes */
+export enum CN {
+  NOSCROLL = 'fkw-popup--noScroll',
+
+  LAYER = 'fkw-popup-layer',
+  LAYER_ACTIVE = 'fkw-popup-layer--active',
+  LAYER_EXIT_ON_CLICK = 'fkw-popup-layer--exitOnLayer',
+
+  DIALOG = 'fkw-popup-dialog',
+  DIALOG_ACTIVE = 'fkw-popup-dialog--active',
+  DIALOG_OPEN = 'fkw-popup-dialog--open',
+  DIALOG_CLOSE = 'fkw-popup-dialog--close',
+  DIALOG_ACTIONS_PREVENTED = 'fkw-popup-dialog--actionsPrevented',
+
+  BUTTON = 'fkw-popup-button',
+  BUTTON_ACTIVE = 'fkw-popup-button--active',
+}
+
+export interface PopupLayerProps extends React.DetailsHTMLAttributes<HTMLDivElement> {
   children: React.ReactNode | React.ReactNode[]
 
   /** Close popup by pressing Escape
@@ -22,7 +40,7 @@ export interface IPopupLayerProps extends React.DetailsHTMLAttributes<HTMLDivEle
   setIsPopupsOpen?: (state: boolean) => void
 }
 
-export interface IPopupDialogProps extends React.DetailsHTMLAttributes<HTMLDivElement> {
+export interface PopupDialogProps extends React.DetailsHTMLAttributes<HTMLDivElement> {
   children: React.ReactNode | React.ReactNode[]
   id: string
 
@@ -36,10 +54,22 @@ export interface IPopupDialogProps extends React.DetailsHTMLAttributes<HTMLDivEl
   stateSetter?: (state: boolean) => void
 }
 
-export interface IPopupButtonProps extends React.DetailsHTMLAttributes<HTMLButtonElement> {
+export interface PopupButtonProps extends React.DetailsHTMLAttributes<HTMLElement> {
   children: React.ReactNode | React.ReactNode[]
   togglePopupId: string
 
   disabled?: boolean
   onClick?: () => void
+
+  /** @default "button" */
+  as?: 'button' | 'div'
 }
+
+
+
+/** @deprecated use PopupButtonProps instead */
+export type IPopupButtonProps = PopupButtonProps;
+/** @deprecated use PopupLayerProps instead */
+export type IPopupLayerProps = PopupLayerProps;
+/** @deprecated use PopupDialogProps instead */
+export type IPopupDialogProps = PopupDialogProps;

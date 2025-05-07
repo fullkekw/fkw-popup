@@ -14,7 +14,7 @@ React typescript ARIA-Accessible Popup (Modal) component. Compatible with NextJS
 Default implementation
 ```tsx
 import React, { useState, useEffect, useId } from "react";
-import {PopupLayer, PopupDialog, PopupButton} from '@fullkekw/fkw-popup';
+import { PopupLayer, PopupDialog, PopupButton } from '@fullkekw/fkw-popup';
 import '@fullkekw/fkw-popup/css'; // Required styling
 
 const Home: React.FC = () => {
@@ -41,7 +41,7 @@ const Home: React.FC = () => {
 Programmatically change state & prevent user intercations
 ```tsx
 import React, { useState, useEffect, useId } from "react";
-import {PopupLayer, PopupDialog, PopupButton} from '@fullkekw/fkw-popup';
+import { PopupLayer, PopupDialog, PopupButton } from '@fullkekw/fkw-popup';
 import '@fullkekw/fkw-popup/css'; // Required styling
 
 const Home: React.FC = () => {
@@ -68,7 +68,7 @@ const Home: React.FC = () => {
 ```
 ## API
 ```ts
-export interface IPopupLayerProps extends React.DetailsHTMLAttributes<HTMLDivElement> {
+export interface PopupLayerProps extends React.DetailsHTMLAttributes<HTMLDivElement> {
   children: React.ReactNode | React.ReactNode[]
 
   /** Close popup by pressing Escape
@@ -88,7 +88,7 @@ export interface IPopupLayerProps extends React.DetailsHTMLAttributes<HTMLDivEle
   setIsPopupsOpen?: (state: boolean) => void
 }
 
-export interface IPopupDialogProps extends React.DetailsHTMLAttributes<HTMLDivElement> {
+export interface PopupDialogProps extends React.DetailsHTMLAttributes<HTMLDivElement> {
   children: React.ReactNode | React.ReactNode[]
   id: string
 
@@ -102,12 +102,15 @@ export interface IPopupDialogProps extends React.DetailsHTMLAttributes<HTMLDivEl
   stateSetter?: (state: boolean) => void
 }
 
-export interface IPopupButtonProps extends React.DetailsHTMLAttributes<HTMLButtonElement> {
+export interface PopupButtonProps extends React.DetailsHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode | React.ReactNode[]
   togglePopupId: string
 
   disabled?: boolean
   onClick?: () => void
+
+  /** @default "button" */
+  as?: 'button' | 'div'
 }
 ```
 
@@ -124,7 +127,7 @@ pnpm install @fullkekw/fkw-popup
 
 Using yarn
 ```
-yatn add @fullkekw/fkw-menu
+yarn add @fullkekw/fkw-popup
 ```
 
 [changelog](./docs/changelog.md)
