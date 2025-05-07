@@ -6,6 +6,7 @@
 - Fixed overflow behaivour, html tag will no longer be hidden
 - Fixed important specified touch-action for inner elements
 - Expose classnames enum
+- Added ```scale``` appearance animation
 - Renamed: 
   - IPopupButtonProps > PopupButtonProps 
   - IPopupLayerProps > PopupLayerProps 

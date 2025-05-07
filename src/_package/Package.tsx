@@ -105,7 +105,9 @@ export const PopupLayer: React.FC<PopupLayerProps> = ({ children, className, exi
   </div>;
 };
 
-export const PopupDialog: React.FC<PopupDialogProps> = ({ children, className, id, preventUserInteractions, state, stateSetter, ...props }) => {
+export const PopupDialog: React.FC<PopupDialogProps> = ({ children, className, id, preventUserInteractions, state, stateSetter, animation, ...props }) => {
+  animation = animation !== null ? animation ?? 'fade' : null;
+
   const [isOpen, setIsOpen] = useState(false);
 
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -181,7 +183,7 @@ export const PopupDialog: React.FC<PopupDialogProps> = ({ children, className, i
 
 
 
-  return <div className={cn(CN.DIALOG, isOpen && CN.DIALOG_ACTIVE, preventUserInteractions && CN.DIALOG_ACTIONS_PREVENTED, className)} id={id} ref={dialogRef} role='dialog' aria-modal aria-hidden={!isOpen} {...props}>
+  return <div className={cn(CN.DIALOG, isOpen && CN.DIALOG_ACTIVE, preventUserInteractions && CN.DIALOG_ACTIONS_PREVENTED, animation && `${CN.DIALOG_ANIMATION_PREFIX}--${animation}`, className)} id={id} ref={dialogRef} role='dialog' aria-modal aria-hidden={!isOpen} {...props}>
     {children}
   </div>;
 };
@@ -196,7 +198,7 @@ export const PopupButton: React.FC<PopupButtonProps> = ({ children, className, t
     onClick ? onClick() : null;
   }
 
-  return <Tag className={cn(CN.BUTTON, className)} onClick={toggle} aria-haspopup="dialog" tabIndex={0} data-fkw-popup-dialog={togglePopupId} disabled={disabled} {...props}>
+  return <Tag className={cn(CN.BUTTON, className)} onClick={toggle} aria-haspopup="dialog" tabIndex={0} data-fkw-popup-dialog={togglePopupId} disabled={disabled} aria-disabled={disabled} {...props}>
     {children}
   </Tag>;
 };

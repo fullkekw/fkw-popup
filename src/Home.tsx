@@ -4,7 +4,7 @@ import { PopupButton, PopupDialog, PopupLayer } from "./_package/index";
 
 
 const Home: React.FC = () => {
-  const [state, setState] = useState(true);
+  const [state, setState] = useState(false);
 
   const popupId1 = useId().replaceAll(':', '');
   const popupId2 = useId().replaceAll(':', '');
@@ -22,16 +22,16 @@ const Home: React.FC = () => {
         header
       </div>
 
-      <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 
       <PopupLayer className="flex items-center justify-center">
-        <PopupDialog className="w-[500px] h-[200px] bg-white" id={popupId1} state={state}>
+        <PopupDialog className="w-[500px] h-[200px] bg-white" id={popupId1} state={state} animation={'fade'}>
           <PopupButton togglePopupId={popupId1}>
             <p>close 1</p>
           </PopupButton>
         </PopupDialog>
 
-        <PopupDialog className="w-[500px] h-[200px] bg-white" id={popupId2}>
+        <PopupDialog className="w-[500px] h-[200px] bg-white" id={popupId2} animation={'scale'}>
           <PopupButton togglePopupId={popupId2}>
             <p>close 2</p>
           </PopupButton>

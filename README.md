@@ -100,9 +100,12 @@ export interface PopupDialogProps extends React.DetailsHTMLAttributes<HTMLDivEle
 
   /** Sync out state with current dialog state */
   stateSetter?: (state: boolean) => void
+
+  /** Appearance animation @default "fade" */
+  animation?: 'fade' | 'scale' | null
 }
 
-export interface PopupButtonProps extends React.DetailsHTMLAttributes<HTMLButtonElement> {
+export interface PopupButtonProps extends React.DetailsHTMLAttributes<HTMLElement> {
   children: React.ReactNode | React.ReactNode[]
   togglePopupId: string
 

@@ -15,6 +15,7 @@ export enum CN {
   DIALOG_OPEN = 'fkw-popup-dialog--open',
   DIALOG_CLOSE = 'fkw-popup-dialog--close',
   DIALOG_ACTIONS_PREVENTED = 'fkw-popup-dialog--actionsPrevented',
+  DIALOG_ANIMATION_PREFIX = 'fkw-popup-animation',
 
   BUTTON = 'fkw-popup-button',
   BUTTON_ACTIVE = 'fkw-popup-button--active',
@@ -52,6 +53,9 @@ export interface PopupDialogProps extends React.DetailsHTMLAttributes<HTMLDivEle
 
   /** Sync out state with current dialog state */
   stateSetter?: (state: boolean) => void
+
+  /** Appearance animation @default "fade" */
+  animation?: 'fade' | 'scale' | null
 }
 
 export interface PopupButtonProps extends React.DetailsHTMLAttributes<HTMLElement> {
