@@ -1,34 +1,48 @@
 .fkw-popup {
+  &--noScroll {
+    overflow: hidden;
+  }
+
+  &-animation {
+    &--fade {
+      opacity: 1;
+
+      &:not(.fkw-popup-dialog--active) {
+        opacity: 0;
+      }
+    }
+
+    &--scale {
+      scale: 1;
+
+      &:not(.fkw-popup-dialog--active) {
+        scale: 0.8;
+      }
+    }
+  }
+
   &-layer {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     z-index: 9999;
-    transition: .2s ease-in-out;
+    transition: 0.2s ease-in-out;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
     touch-action: none;
-    background: rgba($color: #000000, $alpha: .3);
+    background: rgba($color: #000000, $alpha: 0.3);
     -webkit-tap-highlight-color: transparent;
-
-    .fkw-popup-dialog--active * {
-      touch-action: none !important;
-      pointer-events: none !important;
-    }
+    contain: paint;
+    will-change: opacity, visibility;
 
     &--active {
       opacity: 1;
       visibility: visible;
       touch-action: auto;
       pointer-events: auto;
-
-      .fkw-popup-dialog--active * {
-        touch-action: auto !important;
-        pointer-events: auto !important;
-      }
     }
 
     &--exitOnLayer {
@@ -38,15 +52,13 @@
 
   &-dialog {
     position: absolute;
-    opacity: 0;
     visibility: hidden;
     pointer-events: none;
     touch-action: none;
-    transition: .2s ease-in-out;
+    transition: 0.2s ease-in-out;
     cursor: auto;
 
     &--active {
-      opacity: 1;
       visibility: visible;
       touch-action: auto;
       pointer-events: auto;
@@ -54,6 +66,8 @@
   }
 
   &-button {
+    cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+    user-select: none;
   }
 }

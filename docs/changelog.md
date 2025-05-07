@@ -1,4 +1,16 @@
+- [1.2.5](#125)
 - [1.2.4](#124)
+
+### 1.2.5
+- Added ```as``` property in PopupButton to specify rendered tag
+- Fixed overflow behaivour, html tag will no longer be hidden
+- Fixed important specified touch-action for inner elements
+- Expose classnames enum
+- Added ```scale``` appearance animation
+- Renamed: 
+  - IPopupButtonProps > PopupButtonProps 
+  - IPopupLayerProps > PopupLayerProps 
+  - IPopupDialogProps > PopupDialogProps 
 
 ### 1.2.4
 **Added**:
