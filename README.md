@@ -1,3 +1,8 @@
+# 🛑 DEPRECATED 🛑
+This package is reworked into [@fullkekw/popup](https://www.npmjs.com/package/@fullkekw/popup) and no longer be supported
+
+
+
 ![cover](https://raw.githubusercontent.com/fullkekw/fkw-popup/main/cover.png)
 
 React typescript ARIA-Accessible Popup (Modal) component. Compatible with NextJS & Vite!
